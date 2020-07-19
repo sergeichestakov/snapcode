@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import { Camera } from "expo-camera";
+import uploadImageAsync from "./lib/uploadImageAsync";
 
 export default function App() {
   const [hasPermission, setHasPermission] = React.useState<boolean | null>(
@@ -50,7 +51,9 @@ export default function App() {
             onPress={async () => {
               if (camera) {
                 const { uri } = await camera.takePictureAsync();
-                console.log(uri);
+                console.log("uploading ", uri);
+                const downloadURL = await uploadImageAsync(uri);
+                console.log(downloadURL);
               }
             }}
           ></TouchableOpacity>
