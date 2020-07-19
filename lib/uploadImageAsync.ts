@@ -21,7 +21,7 @@ export default async function uploadImageAsync(uri: string): Promise<string> {
 
   const ref = firebase
     .storage()
-    .ref()
+    .ref("images")
     .child(uuidv4({ random: await Random.getRandomBytesAsync(16) }));
   const snapshot = await ref.put(blob);
 

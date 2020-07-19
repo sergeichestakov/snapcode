@@ -2,6 +2,7 @@ import * as React from "react";
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import { Camera } from "expo-camera";
 import uploadImageAsync from "./lib/uploadImageAsync";
+import extractTextFromImage from "./lib/extractTextFromImage";
 
 export default function App() {
   const [hasPermission, setHasPermission] = React.useState<boolean | null>(
@@ -53,7 +54,9 @@ export default function App() {
                 const { uri } = await camera.takePictureAsync();
                 console.log("uploading ", uri);
                 const downloadURL = await uploadImageAsync(uri);
-                console.log(downloadURL);
+                console.log("download URL: ", downloadURL);
+                const text = await extractTextFromImage(downloadURL);
+                console.log("received text: ", text);
               }
             }}
           ></TouchableOpacity>
