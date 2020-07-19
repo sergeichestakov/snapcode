@@ -1,13 +1,13 @@
 import * as React from "react";
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import { Camera } from "expo-camera";
-import firebase from "./lib/firebase";
 
 export default function App() {
   const [hasPermission, setHasPermission] = React.useState<boolean | null>(
     null
   );
   const [type, setType] = React.useState(Camera.Constants.Type.back);
+  let camera: Camera | null = null;
 
   React.useEffect(() => {
     (async () => {
@@ -22,9 +22,16 @@ export default function App() {
   if (hasPermission === false) {
     return <Text>No access to camera</Text>;
   }
+
   return (
     <View style={styles.container}>
-      <Camera style={styles.cameraContainer} type={type}>
+      <Camera
+        ref={(ref) => {
+          camera = ref;
+        }}
+        style={styles.cameraContainer}
+        type={type}
+      >
         <View style={styles.cameraView}>
           <TouchableOpacity
             style={styles.flipButtonContainer}
@@ -40,8 +47,11 @@ export default function App() {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.captureButton}
-            onPress={() => {
-              console.log("taking picture");
+            onPress={async () => {
+              if (camera) {
+                const { uri } = await camera.takePictureAsync();
+                console.log(uri);
+              }
             }}
           ></TouchableOpacity>
         </View>
