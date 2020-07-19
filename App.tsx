@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import { Camera } from "expo-camera";
+import firebase from "./lib/firebase";
 
 export default function App() {
   const [hasPermission, setHasPermission] = React.useState<boolean | null>(
