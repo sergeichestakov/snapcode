@@ -1,8 +1,8 @@
 import * as React from "react";
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import { Camera } from "expo-camera";
-import uploadImageAsync from "./lib/uploadImageAsync";
-import extractTextFromImage from "./lib/extractTextFromImage";
+import uploadImageAsync from "./api/uploadImageAsync";
+import extractTextFromImage from "./api/extractTextFromImage";
 
 export default function App() {
   const [hasPermission, setHasPermission] = React.useState<boolean | null>(
@@ -21,6 +21,7 @@ export default function App() {
   if (hasPermission === null) {
     return <View />;
   }
+
   if (hasPermission === false) {
     return <Text>No access to camera</Text>;
   }
