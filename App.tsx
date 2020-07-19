@@ -2,6 +2,7 @@ import * as React from "react";
 import {
   Text,
   View,
+  Button,
   StyleSheet,
   TouchableOpacity,
   ActivityIndicator,
@@ -16,6 +17,7 @@ export default function App() {
   );
   const [type, setType] = React.useState(Camera.Constants.Type.back);
   const [processingImage, setProcessingImage] = React.useState<boolean>(false);
+  const [imageText, setImageText] = React.useState<string>("");
   let camera: Camera | null = null;
 
   React.useEffect(() => {
@@ -37,6 +39,15 @@ export default function App() {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
+  if (imageText) {
+    return (
+      <View style={styles.imageTextContainer}>
+        <Text style={styles.imageText}>{imageText}</Text>
+        <Button title="Reset" onPress={() => setImageText("")} />
       </View>
     );
   }
@@ -67,13 +78,14 @@ export default function App() {
             style={styles.captureButton}
             onPress={async () => {
               if (camera) {
-                setProcessingImage(true);
                 const { uri } = await camera.takePictureAsync();
+                setProcessingImage(true);
                 console.log("uploading ", uri);
                 const downloadURL = await uploadImageAsync(uri);
                 console.log("download URL: ", downloadURL);
                 const text = await extractTextFromImage(downloadURL);
                 console.log("received text: ", text);
+                setImageText(text);
                 setProcessingImage(false);
               }
             }}
@@ -102,6 +114,15 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  imageTextContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  imageText: {
+    fontSize: 20,
+    marginBottom: 20,
   },
   captureButton: {
     width: 70,
