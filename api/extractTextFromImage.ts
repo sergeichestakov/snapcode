@@ -2,7 +2,9 @@ import { GOOGLE_CLOUD_VISION_API_KEY } from "@env";
 
 const VISION_API_URL = `https://vision.googleapis.com/v1/images:annotate?key=${GOOGLE_CLOUD_VISION_API_KEY}`;
 
-export default async function extractTextFromImage(uri: string): Promise<any> {
+export default async function extractTextFromImage(
+  uri: string
+): Promise<string | null> {
   const body = JSON.stringify({
     requests: [
       {
@@ -26,5 +28,10 @@ export default async function extractTextFromImage(uri: string): Promise<any> {
   });
 
   const json = await response.json();
+
+  if (!json.responses?.length || !json.responses[0].textAnnotations?.length) {
+    return null;
+  }
+
   return json.responses[0].textAnnotations[0].description;
 }

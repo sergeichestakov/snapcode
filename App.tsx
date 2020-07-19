@@ -32,7 +32,7 @@ export default function App() {
   }
 
   if (hasPermission === false) {
-    return <Text>No access to camera</Text>;
+    return <Text>Give me camera pls :(</Text>;
   }
 
   if (processingImage) {
@@ -85,7 +85,9 @@ export default function App() {
                 console.log("download URL: ", downloadURL);
                 const text = await extractTextFromImage(downloadURL);
                 console.log("received text: ", text);
-                setImageText(text);
+                if (text) {
+                  setImageText(text);
+                }
                 setProcessingImage(false);
               }
             }}
