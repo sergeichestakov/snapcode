@@ -1,5 +1,11 @@
 import * as React from "react";
-import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  Text,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
 import { Camera } from "expo-camera";
 import uploadImageAsync from "./api/uploadImageAsync";
 import extractTextFromImage from "./api/extractTextFromImage";
@@ -9,6 +15,7 @@ export default function App() {
     null
   );
   const [type, setType] = React.useState(Camera.Constants.Type.back);
+  const [processingImage, setProcessingImage] = React.useState<boolean>(false);
   let camera: Camera | null = null;
 
   React.useEffect(() => {
@@ -24,6 +31,14 @@ export default function App() {
 
   if (hasPermission === false) {
     return <Text>No access to camera</Text>;
+  }
+
+  if (processingImage) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
   }
 
   return (
@@ -52,12 +67,14 @@ export default function App() {
             style={styles.captureButton}
             onPress={async () => {
               if (camera) {
+                setProcessingImage(true);
                 const { uri } = await camera.takePictureAsync();
                 console.log("uploading ", uri);
                 const downloadURL = await uploadImageAsync(uri);
                 console.log("download URL: ", downloadURL);
                 const text = await extractTextFromImage(downloadURL);
                 console.log("received text: ", text);
+                setProcessingImage(false);
               }
             }}
           ></TouchableOpacity>
@@ -80,6 +97,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "flex-end",
     backgroundColor: "transparent",
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
   captureButton: {
     width: 70,
