@@ -26,8 +26,9 @@ export default async function createRepl(
   options: Options
 ): Promise<Response | null> {
   // language and title are required fields
-  const language = options.language || "nodejs";
-  const title = options.title || `Test${Math.floor(Math.random() * 100 + 1)}`;
+  const language = options.language || "python3";
+  const title =
+    options.title || `Test${Math.floor(Math.random() * 1000000 + 1)}`;
 
   const body = JSON.stringify({
     ...options,

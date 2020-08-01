@@ -9,7 +9,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { Camera } from "expo-camera";
-import uploadImageAsync from "./api/uploadImageAsync";
+import * as FileSystem from "expo-file-system";
 import extractTextFromImage from "./api/extractTextFromImage";
 import createRepl from "./api/createRepl";
 
@@ -85,20 +85,21 @@ export default function App() {
 
               const { uri } = await camera.takePictureAsync();
               setProcessingImage(true);
-              console.log("uploading ", uri);
-              const downloadURL = await uploadImageAsync(uri);
-              console.log("download URL: ", downloadURL);
-              const content = await extractTextFromImage(downloadURL);
-              console.log("received text: ", content);
+
+              const encoded = await FileSystem.readAsStringAsync(uri, {
+                encoding: FileSystem.EncodingType.Base64,
+              });
+
+              const content = await extractTextFromImage(encoded);
+
               if (content) {
                 const files = [
                   {
-                    name: "index.js",
+                    name: "main.py",
                     content,
                   },
                 ];
                 const repl = await createRepl({ files });
-                console.log("created repl: ", repl);
 
                 if (repl) {
                   // url is of the form /@username/slug

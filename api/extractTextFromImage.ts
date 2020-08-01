@@ -3,16 +3,14 @@ import { GOOGLE_CLOUD_VISION_API_KEY } from "@env";
 const VISION_API_URL = `https://vision.googleapis.com/v1/images:annotate?key=${GOOGLE_CLOUD_VISION_API_KEY}`;
 
 export default async function extractTextFromImage(
-  uri: string
+  encoded: string
 ): Promise<string | null> {
   const body = JSON.stringify({
     requests: [
       {
         features: [{ type: "DOCUMENT_TEXT_DETECTION" }],
         image: {
-          source: {
-            imageUri: uri,
-          },
+          content: encoded,
         },
       },
     ],
