@@ -48,8 +48,28 @@ export default function App() {
   if (imageText) {
     return (
       <View style={styles.imageTextContainer}>
+        <Text style={styles.imageTextHeader}>Received:</Text>
         <Text style={styles.imageText}>{imageText}</Text>
-        <Button title="Reset" onPress={() => setImageText("")} />
+        <Button
+          title="Create Repl"
+          onPress={async () => {
+            const files = [
+              {
+                name: "main.py",
+                content: imageText,
+              },
+            ];
+            const repl = await createRepl({ files });
+
+            if (repl) {
+              // url is of the form /@username/slug
+              const url = `https://repl.it${repl.url}`;
+
+              await Linking.openURL(url);
+            }
+          }}
+        />
+        <Button title="Try Again" onPress={() => setImageText("")} />
       </View>
     );
   }
@@ -79,11 +99,7 @@ export default function App() {
           <TouchableOpacity
             style={styles.captureButton}
             onPress={async () => {
-              if (!camera) {
-                return;
-              }
-
-              const { uri } = await camera.takePictureAsync();
+              const { uri } = await camera!.takePictureAsync();
               setProcessingImage(true);
 
               const encoded = await FileSystem.readAsStringAsync(uri, {
@@ -93,21 +109,6 @@ export default function App() {
               const content = await extractTextFromImage(encoded);
 
               if (content) {
-                const files = [
-                  {
-                    name: "main.py",
-                    content,
-                  },
-                ];
-                const repl = await createRepl({ files });
-
-                if (repl) {
-                  // url is of the form /@username/slug
-                  const url = `https://repl.it${repl.url}`;
-
-                  await Linking.openURL(url);
-                }
-
                 setImageText(content);
               }
               setProcessingImage(false);
@@ -142,6 +143,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  imageTextHeader: {
+    fontSize: 30,
+    marginBottom: 20,
   },
   imageText: {
     fontSize: 20,
