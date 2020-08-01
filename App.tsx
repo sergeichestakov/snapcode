@@ -3,6 +3,7 @@ import {
   Text,
   View,
   Button,
+  Linking,
   StyleSheet,
   TouchableOpacity,
   ActivityIndicator,
@@ -102,7 +103,8 @@ export default function App() {
                 if (repl) {
                   // url is of the form /@username/slug
                   const url = `https://repl.it${repl.url}`;
-                  console.log("received url: ", url);
+
+                  await Linking.openURL(url);
                 }
 
                 setImageText(content);
