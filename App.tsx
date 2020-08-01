@@ -10,6 +10,7 @@ import {
 import { Camera } from "expo-camera";
 import uploadImageAsync from "./api/uploadImageAsync";
 import extractTextFromImage from "./api/extractTextFromImage";
+import createRepl from "./api/createRepl";
 
 export default function App() {
   const [hasPermission, setHasPermission] = React.useState<boolean | null>(
@@ -77,19 +78,36 @@ export default function App() {
           <TouchableOpacity
             style={styles.captureButton}
             onPress={async () => {
-              if (camera) {
-                const { uri } = await camera.takePictureAsync();
-                setProcessingImage(true);
-                console.log("uploading ", uri);
-                const downloadURL = await uploadImageAsync(uri);
-                console.log("download URL: ", downloadURL);
-                const text = await extractTextFromImage(downloadURL);
-                console.log("received text: ", text);
-                if (text) {
-                  setImageText(text);
-                }
-                setProcessingImage(false);
+              if (!camera) {
+                return;
               }
+
+              const { uri } = await camera.takePictureAsync();
+              setProcessingImage(true);
+              console.log("uploading ", uri);
+              const downloadURL = await uploadImageAsync(uri);
+              console.log("download URL: ", downloadURL);
+              const content = await extractTextFromImage(downloadURL);
+              console.log("received text: ", content);
+              if (content) {
+                const files = [
+                  {
+                    name: "index.js",
+                    content,
+                  },
+                ];
+                const repl = await createRepl({ files });
+                console.log("created repl: ", repl);
+
+                if (repl) {
+                  // url is of the form /@username/slug
+                  const url = `https://repl.it${repl.url}`;
+                  console.log("received url: ", url);
+                }
+
+                setImageText(content);
+              }
+              setProcessingImage(false);
             }}
           ></TouchableOpacity>
         </View>
