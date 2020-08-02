@@ -8,10 +8,16 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from "react-native";
+import RNPickerSelect from "react-native-picker-select";
 import { Camera } from "expo-camera";
 import * as FileSystem from "expo-file-system";
 import extractTextFromImage from "./api/extractTextFromImage";
 import createRepl from "./api/createRepl";
+import {
+  getMainFileForLanguage,
+  SupportedLanguage,
+  LANGUAGES,
+} from "./api/languages";
 
 export default function App() {
   const [hasPermission, setHasPermission] = React.useState<boolean | null>(
@@ -20,6 +26,7 @@ export default function App() {
   const [type, setType] = React.useState(Camera.Constants.Type.back);
   const [processingImage, setProcessingImage] = React.useState<boolean>(false);
   const [imageText, setImageText] = React.useState<string>("");
+  const [language, setLanguage] = React.useState<string>("python3");
   let camera: Camera | null = null;
 
   React.useEffect(() => {
@@ -50,12 +57,24 @@ export default function App() {
       <View style={styles.imageTextContainer}>
         <Text style={styles.imageTextHeader}>Received:</Text>
         <Text style={styles.imageText}>{imageText}</Text>
+
+        <Text style={styles.languageSelectText}>Select a language:</Text>
+        <View style={styles.languageSelector}>
+          <RNPickerSelect
+            onValueChange={(value) => {
+              setLanguage(value);
+            }}
+            placeholder={{}}
+            items={LANGUAGES}
+          />
+        </View>
         <Button
           title="Create Repl"
           onPress={async () => {
+            const name = getMainFileForLanguage(language as SupportedLanguage);
             const files = [
               {
-                name: "main.py",
+                name,
                 content: imageText,
               },
             ];
@@ -151,6 +170,13 @@ const styles = StyleSheet.create({
   imageText: {
     fontSize: 20,
     marginBottom: 20,
+  },
+  languageSelector: {
+    marginBottom: 20,
+  },
+  languageSelectText: {
+    fontSize: 20,
+    marginBottom: 15,
   },
   captureButton: {
     width: 70,

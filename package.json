@@ -15,7 +15,8 @@
     "react": "~16.11.0",
     "react-dom": "~16.11.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-38.0.2.tar.gz",
-    "react-native-dotenv": "^2.2.0"
+    "react-native-dotenv": "^2.2.0",
+    "react-native-picker-select": "^7.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.8.6",
