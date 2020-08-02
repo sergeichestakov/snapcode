@@ -1,6 +1,8 @@
 # snapcode
 
 Expo app that allows you to take a picture of handwritten code and execute it on [Repl.it](https://repl.it).
+
+Watch [the demo](https://twitter.com/SergeiChestakov/status/1289726580210561025?s=20).
 ### Setup
 1. Get a [Google Cloud Vision API Key](https://cloud.google.com/vision/docs/before-you-begin).
 2. Get a Repl.it [API Key](https://devs.turbio.repl.co/).
