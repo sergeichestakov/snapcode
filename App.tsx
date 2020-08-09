@@ -78,7 +78,7 @@ export default function App() {
                 content: imageText,
               },
             ];
-            const repl = await createRepl({ files });
+            const repl = await createRepl({ files, language });
 
             if (repl) {
               // url is of the form /@username/slug
