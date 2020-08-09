@@ -20,8 +20,12 @@ Logo credit: [@Vandesm14](https://twitter.com/Vandesm14).
 GOOGLE_CLOUD_VISION_API_KEY='${YOUR_KEY_HERE}'
 REPLIT_API_KEY='${YOUR_KEY_HERE}'
 ```
+4. Make sure you have `expo-cli` installed. If you don't you can install it via:
+```bash
+npm install -g expo-cli
+```
 
-4. From there you can just:
+5. From there you can just:
 ```bash
 # Install dependencies
 yarn install
